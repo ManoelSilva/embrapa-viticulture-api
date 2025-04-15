@@ -4,7 +4,7 @@ from unittest.mock import patch, Mock
 import pandas as pd
 
 
-class TestScrapperService(object):
+class TestEMBRAPAScrapperService(object):
     @pytest.fixture
     def scrapper_service(self):
         return EMBRAPAScrapperService()

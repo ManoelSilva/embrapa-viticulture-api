@@ -49,7 +49,7 @@ class TestApp(object):
         app_instance = App()
         blueprint_names = set(bp.name for bp in app_instance.app.blueprints.values())
         expected_blueprints = {
-            'auth', 'api_default', 'api_exporting',
+            'api_auth', 'api_default', 'api_exporting',
             'api_import', 'swagger_ui', 'api_processing'
         }
         assert blueprint_names.issuperset(expected_blueprints)
