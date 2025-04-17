@@ -78,7 +78,7 @@ DATABASE_URL=your_database_url
     waitress-serve --port=8000 app:app
     ```
 
-2. Access the application at [http://127.0.0.1:8000](http://127.0.0.1:8000).
+2. Access the application at [http://127.0.0.1:8000/swagger](http://127.0.0.1:8000).
 
 ## Tests
 
