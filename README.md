@@ -1,40 +1,51 @@
-# Data Extraction and Authentication Project
+# Embrapa Viticulture API
 
 This project is a Flask application that provides data extraction services and user authentication using JWT. It also includes Swagger documentation for API endpoints.
 
 ## Project Structure
 
-- `app.py`: Main file that initializes the Flask application and configures the routes.
-- `config/`: Contains configuration files for the application.
-  - `auth.py`: Authentication-related configurations.
-  - `swagger.py`: Swagger UI configuration.
-- `routes/`: Contains route definitions for the application.
-  - `auth.py`: Routes for user authentication.
-  - `data.py`: Routes for data extraction and manipulation.
-- `service/`: Contains service logic for the application.
-  - `auth.py`: Service for user authentication.
-  - `data_service.py`: Service for data extraction and transformation.
-  - `database.py`: Service for database operations.
-- `swagger.yml`: Defines the API documentation for Swagger.
-- `test/`: Contains unit tests for the application.
+```
+.
+├── app.py                  # Main application file
+├── config/                 # Configuration files
+│   ├── auth.py            # Authentication configurations
+│   └── swagger.py         # Swagger UI configuration
+├── routes/                 # API route definitions
+│   ├── auth.py            # Authentication routes
+│   ├── api_default.py     # Default API routes
+│   ├── api_processing.py  # Processing data routes
+│   ├── api_exporting.py   # Export data routes
+│   ├── api_import.py      # Import data routes
+│   └── api_routes.py      # Main API routes
+├── service/                # Business logic and services
+│   ├── auth.py            # Authentication service
+│   ├── scrapper.py        # Web scraping service
+│   ├── duck_db.py         # Database operations
+│   └── extractor.py       # Data extraction service
+├── test/                   # Unit tests
+├── logger_serialize.py     # Logging configuration
+├── requirements.txt        # Project dependencies
+└── README.md              # Project documentation
+```
 
 ## Requirements
 
 - Python 3.x
 - pip
+- DuckDB (for local database operations)
 
 ## Installation
 
 1. Clone the repository:
     ```sh
     git clone <REPOSITORY_URL>
-    cd <REPOSITORY_NAME>
+    cd embrapa-viticulture-api
     ```
 
 2. Create a virtual environment and activate it:
     ```sh
-    python -m venv venv
-    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    python -m venv .venv
+    .venv\Scripts\activate
     ```
 
 3. Install the dependencies:
@@ -48,6 +59,7 @@ Create a `.env` file in the project root and define the following environment va
 ```env
 SECRET_KEY=your_secret_key
 JWT_SECRET_KEY=your_jwt_secret_key
+DATABASE_URL=your_database_url
 ```
 
 ## Running the Application
@@ -72,175 +84,34 @@ JWT_SECRET_KEY=your_jwt_secret_key
 
 Unit tests are located in the `test/` folder. To run them, use the command:
 ```sh
-pytest --cov=service
+pytest -cov
 ```
 
 The coverage report will be displayed in the terminal.
 
-## Endpoints
+## API Endpoints
 
-The API endpoints are defined in the `swagger.yml` file. Below is a summary of the main routes:
+The API provides the following endpoints:
 
-### 1. Authentication
-#### POST /login
-Authenticates the user and returns a JWT token.
+### Authentication
+- `POST /login`: Authenticates users and returns a JWT token
 
-**Request Body:**
-```json
-{
-    "username": "admin",
-    "password": "admin"
-}
-```
+### Data Endpoints
+- Production Data
+- Commercialization Data
+- Processing Data (Vines, Hybrid Americans, Table Grapes, Unclassified)
+- Importation Data (Table Wines, Sparkling, Fresh Grapes, Raisins, Grape Juice)
+- Exportation Data (Table Wines, Sparkling, Fresh Grapes, Grape Juice)
 
-**Success Response:**
-```json
-{
-    "access_token": "your_jwt_token"
-}
-```
+Each endpoint supports optional query parameters:
+- `year`: Filter data by specific year
 
-**Error Response:**
-```json
-{
-    "error": "Invalid credentials"
-}
-```
+## Data Sources
 
-### 2. Production
-#### GET /api/production
-Returns production data for the specified year.
-
-**Query Parameters (optional):**
-- `year`: Year to filter the data.
-
-**Success Response (200):**
-```json
-{
-    "data": [...]
-}
-```
-
-**Error Response (401):**
-```json
-{
-    "error": "Unauthorized"
-}
-```
-
-### 3. Commercialization
-#### GET /api/commercialization
-Returns commercialization data for the specified year.
-
-**Query Parameters (optional):**
-- `year`: Year to filter the data.
-
-**Success Response (200):**
-```json
-{
-    "data": [...]
-}
-```
-
-**Error Response (401):**
-```json
-{
-    "error": "Unauthorized"
-}
-```
-
-### 4. Processing
-#### GET /api/processing/vines
-Returns processing data for the "Vines" resource.
-
-#### GET /api/processing/hybrid_americans
-Returns processing data for the "Hybrid Americans" resource.
-
-#### GET /api/processing/table_grapes
-Returns processing data for the "Table Grapes" resource.
-
-#### GET /api/processing/unclassified
-Returns processing data for the "Unclassified" resource.
-
-**Query Parameters (optional):**
-- `year`: Year to filter the data.
-
-**Success Response (200):**
-```json
-{
-    "data": [...]
-}
-```
-
-**Error Response (401):**
-```json
-{
-    "error": "Unauthorized"
-}
-```
-
-### 5. Importation
-#### GET /api/import/table_wines
-Returns importation data for the "Table Wines" resource.
-
-#### GET /api/import/sparkling
-Returns importation data for the "Sparkling" resource.
-
-#### GET /api/import/fresh_grapes
-Returns importation data for the "Fresh Grapes" resource.
-
-#### GET /api/import/raisins
-Returns importation data for the "Raisins" resource.
-
-#### GET /api/import/grape_juice
-Returns importation data for the "Grape Juice" resource.
-
-**Query Parameters (optional):**
-- `year`: Year to filter the data.
-
-**Success Response (200):**
-```json
-{
-    "data": [...]
-}
-```
-
-**Error Response (401):**
-```json
-{
-    "error": "Unauthorized"
-}
-```
-
-### 6. Exportation
-#### GET /api/exporting/table_wines
-Returns exportation data for the "Table Wines" resource.
-
-#### GET /api/exporting/sparkling
-Returns exportation data for the "Sparkling" resource.
-
-#### GET /api/exporting/fresh_grapes
-Returns exportation data for the "Fresh Grapes" resource.
-
-#### GET /api/exporting/grape_juice
-Returns exportation data for the "Grape Juice" resource.
-
-**Query Parameters (optional):**
-- `year`: Year to filter the data.
-
-**Success Response (200):**
-```json
-{
-    "data": [...]
-}
-```
-
-**Error Response (401):**
-```json
-{
-    "error": "Unauthorized"
-}
-```
+The application extracts data from various sources:
+- Embrapa Uva e Vinho
+- IBGE (Brazilian Institute of Geography and Statistics)
+- MAPA (Ministry of Agriculture, Livestock and Supply)
 
 ## Dependencies
 
@@ -261,4 +132,12 @@ The project dependencies are listed in the `requirements.txt` file:
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request

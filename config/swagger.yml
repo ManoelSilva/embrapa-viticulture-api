@@ -1,16 +1,16 @@
 swagger: "2.0"
 info:
-  title: "EMBRAPA Vitivinicultura API"
-  description: "API para coletar dados do site VitiBrasil"
+  title: "EMBRAPA Viticulture API"
+  description: "API to collect data from VitiBrasil website"
   version: "1.0.0"
 
 paths:
   /api/auth/register:
     post:
       tags:
-        - "Autenticação"
-      summary: "Registrar um novo usuário"
-      description: "Permite registrar um novo usuário fornecendo um nome de usuário e senha"
+        - "Authentication"
+      summary: "Register a new user"
+      description: "Allows registering a new user by providing a username and password"
       parameters:
         - in: "body"
           name: "body"
@@ -24,16 +24,16 @@ paths:
                 type: "string"
       responses:
         201:
-          description: "Usuário registrado com sucesso"
+          description: "User successfully registered"
         400:
-          description: "Dados inválidos"
+          description: "Invalid data"
 
   /api/auth/login:
     post:
       tags:
-        - "Autenticação"
-      summary: "Autenticar um usuário"
-      description: "Gera um token JWT para autenticação"
+        - "Authentication"
+      summary: "Authenticate a user"
+      description: "Generates a JWT token for authentication"
       parameters:
         - in: "body"
           name: "body"
@@ -47,309 +47,309 @@ paths:
                 type: "string"
       responses:
         200:
-          description: "Token gerado com sucesso"
+          description: "Token successfully generated"
         401:
-          description: "Credenciais inválidas"
+          description: "Invalid credentials"
 
   /api/production:
     get:
       tags:
-        - "Produção"
-      summary: "Obter dados de produção"
-      description: "Retorna os dados de produção para o ano especificado"
+        - "Production"
+      summary: "Get production data"
+      description: "Returns production data for the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de produção obtidos com sucesso"
+          description: "Production data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/commercialization:
     get:
       tags:
-        - "Comercialização"
-      summary: "Obter dados de comercialização"
-      description: "Retorna os dados de comercialização para o ano especificado"
+        - "Commercialization"
+      summary: "Get commercialization data"
+      description: "Returns commercialization data for the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de comercialização obtidos com sucesso"
+          description: "Commercialization data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/processing/vines:
     get:
       tags:
-        - "Processamento"
-      summary: "Obter dados de processamento - Viníferas"
-      description: "Retorna os dados de processamento para o recurso 'vines' no ano especificado"
+        - "Processing"
+      summary: "Get processing data - Wine Grapes"
+      description: "Returns processing data for the 'vines' resource in the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de processamento obtidos com sucesso"
+          description: "Processing data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/processing/hybrid_americans:
     get:
       tags:
-        - "Processamento"
-      summary: "Obter dados de processamento - Americanas e Híbridas"
-      description: "Retorna os dados de processamento para o recurso 'hybrid_americans' no ano especificado"
+        - "Processing"
+      summary: "Get processing data - American and Hybrid Grapes"
+      description: "Returns processing data for the 'hybrid_americans' resource in the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de processamento obtidos com sucesso"
+          description: "Processing data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/processing/table_grapes:
     get:
       tags:
-        - "Processamento"
-      summary: "Obter dados de processamento - Uvas de Mesa"
-      description: "Retorna os dados de processamento para o recurso 'table_grapes' no ano especificado"
+        - "Processing"
+      summary: "Get processing data - Table Grapes"
+      description: "Returns processing data for the 'table_grapes' resource in the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de processamento obtidos com sucesso"
+          description: "Processing data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/processing/unclassified:
     get:
       tags:
-        - "Processamento"
-      summary: "Obter dados de processamento - Sem Classificação"
-      description: "Retorna os dados de processamento para o recurso 'unclassified' no ano especificado"
+        - "Processing"
+      summary: "Get processing data - Unclassified"
+      description: "Returns processing data for the 'unclassified' resource in the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de processamento obtidos com sucesso"
+          description: "Processing data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/import/table_wines:
     get:
       tags:
-        - "Importação"
-      summary: "Obter dados de importação - Vinhos de Mesa"
-      description: "Retorna os dados de importação para o recurso 'table_wines' no ano especificado"
+        - "Import"
+      summary: "Get import data - Table Wines"
+      description: "Returns import data for the 'table_wines' resource in the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de importação obtidos com sucesso"
+          description: "Import data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/import/sparkling:
     get:
       tags:
-        - "Importação"
-      summary: "Obter dados de importação - Espumantes"
-      description: "Retorna os dados de importação para o recurso 'sparkling' no ano especificado"
+        - "Import"
+      summary: "Get import data - Sparkling Wines"
+      description: "Returns import data for the 'sparkling' resource in the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de importação obtidos com sucesso"
+          description: "Import data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/import/fresh_grapes:
     get:
       tags:
-        - "Importação"
-      summary: "Obter dados de importação - Uvas Frescas"
-      description: "Retorna os dados de importação para o recurso 'fresh_grapes' no ano especificado"
+        - "Import"
+      summary: "Get import data - Fresh Grapes"
+      description: "Returns import data for the 'fresh_grapes' resource in the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de importação obtidos com sucesso"
+          description: "Import data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/import/raisins:
     get:
       tags:
-        - "Importação"
-      summary: "Obter dados de importação - Uvas Passas"
-      description: "Retorna os dados de importação para o recurso 'raisins' no ano especificado"
+        - "Import"
+      summary: "Get import data - Raisins"
+      description: "Returns import data for the 'raisins' resource in the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de importação obtidos com sucesso"
+          description: "Import data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/import/grape_juice:
     get:
       tags:
-        - "Importação"
-      summary: "Obter dados de importação - Suco de Uva"
-      description: "Retorna os dados de importação para o recurso 'grape_juice' no ano especificado"
+        - "Import"
+      summary: "Get import data - Grape Juice"
+      description: "Returns import data for the 'grape_juice' resource in the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de importação obtidos com sucesso"
+          description: "Import data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/exporting/table_wines:
     get:
       tags:
-        - "Exportação"
-      summary: "Obter dados de exportação - Vinhos de Mesa"
-      description: "Retorna os dados de exportação para o recurso 'table_wines' no ano especificado"
+        - "Export"
+      summary: "Get export data - Table Wines"
+      description: "Returns export data for the 'table_wines' resource in the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de exportação obtidos com sucesso"
+          description: "Export data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/exporting/sparkling:
     get:
       tags:
-        - "Exportação"
-      summary: "Obter dados de exportação - Espumantes"
-      description: "Retorna os dados de exportação para o recurso 'sparkling' no ano especificado"
+        - "Export"
+      summary: "Get export data - Sparkling Wines"
+      description: "Returns export data for the 'sparkling' resource in the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de exportação obtidos com sucesso"
+          description: "Export data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/exporting/fresh_grapes:
     get:
       tags:
-        - "Exportação"
-      summary: "Obter dados de exportação - Uvas Frescas"
-      description: "Retorna os dados de exportação para o recurso 'fresh_grapes' no ano especificado"
+        - "Export"
+      summary: "Get export data - Fresh Grapes"
+      description: "Returns export data for the 'fresh_grapes' resource in the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de exportação obtidos com sucesso"
+          description: "Export data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
   /api/exporting/grape_juice:
     get:
       tags:
-        - "Exportação"
-      summary: "Obter dados de exportação - Suco de Uva"
-      description: "Retorna os dados de exportação para o recurso 'grape_juice' no ano especificado"
+        - "Export"
+      summary: "Get export data - Grape Juice"
+      description: "Returns export data for the 'grape_juice' resource in the specified year"
       parameters:
         - name: "year"
           in: "query"
           required: false
           type: "string"
-          description: "Ano para filtrar os dados"
+          description: "Year to filter the data"
       security:
         - Bearer: [ ]
       responses:
         200:
-          description: "Dados de exportação obtidos com sucesso"
+          description: "Export data successfully obtained"
         401:
-          description: "Não autorizado"
+          description: "Unauthorized"
 
 securityDefinitions:
   Bearer:
