@@ -1,0 +1,14 @@
+Flask
+Flask-JWT-Extended
+Flask-Swagger-UI
+Werkzeug
+BeautifulSoup4
+waitress
+loguru
+duckdb
+requests
+pandas
+numpy
+lxml
+pytest
+coverage

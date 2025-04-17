@@ -1,0 +1,360 @@
+swagger: "2.0"
+info:
+  title: "EMBRAPA Viticulture API"
+  description: "API to collect data from VitiBrasil website"
+  version: "1.0.0"
+
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - "Authentication"
+      summary: "Register a new user"
+      description: "Allows registering a new user by providing a username and password"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              username:
+                type: "string"
+              password:
+                type: "string"
+      responses:
+        201:
+          description: "User successfully registered"
+        400:
+          description: "Invalid data"
+
+  /api/auth/login:
+    post:
+      tags:
+        - "Authentication"
+      summary: "Authenticate a user"
+      description: "Generates a JWT token for authentication"
+      parameters:
+        - in: "body"
+          name: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              username:
+                type: "string"
+              password:
+                type: "string"
+      responses:
+        200:
+          description: "Token successfully generated"
+        401:
+          description: "Invalid credentials"
+
+  /api/production:
+    get:
+      tags:
+        - "Production"
+      summary: "Get production data"
+      description: "Returns production data for the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Production data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/commercialization:
+    get:
+      tags:
+        - "Commercialization"
+      summary: "Get commercialization data"
+      description: "Returns commercialization data for the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Commercialization data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/processing/vines:
+    get:
+      tags:
+        - "Processing"
+      summary: "Get processing data - Wine Grapes"
+      description: "Returns processing data for the 'vines' resource in the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Processing data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/processing/hybrid_americans:
+    get:
+      tags:
+        - "Processing"
+      summary: "Get processing data - American and Hybrid Grapes"
+      description: "Returns processing data for the 'hybrid_americans' resource in the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Processing data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/processing/table_grapes:
+    get:
+      tags:
+        - "Processing"
+      summary: "Get processing data - Table Grapes"
+      description: "Returns processing data for the 'table_grapes' resource in the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Processing data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/processing/unclassified:
+    get:
+      tags:
+        - "Processing"
+      summary: "Get processing data - Unclassified"
+      description: "Returns processing data for the 'unclassified' resource in the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Processing data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/import/table_wines:
+    get:
+      tags:
+        - "Import"
+      summary: "Get import data - Table Wines"
+      description: "Returns import data for the 'table_wines' resource in the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Import data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/import/sparkling:
+    get:
+      tags:
+        - "Import"
+      summary: "Get import data - Sparkling Wines"
+      description: "Returns import data for the 'sparkling' resource in the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Import data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/import/fresh_grapes:
+    get:
+      tags:
+        - "Import"
+      summary: "Get import data - Fresh Grapes"
+      description: "Returns import data for the 'fresh_grapes' resource in the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Import data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/import/raisins:
+    get:
+      tags:
+        - "Import"
+      summary: "Get import data - Raisins"
+      description: "Returns import data for the 'raisins' resource in the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Import data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/import/grape_juice:
+    get:
+      tags:
+        - "Import"
+      summary: "Get import data - Grape Juice"
+      description: "Returns import data for the 'grape_juice' resource in the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Import data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/exporting/table_wines:
+    get:
+      tags:
+        - "Export"
+      summary: "Get export data - Table Wines"
+      description: "Returns export data for the 'table_wines' resource in the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Export data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/exporting/sparkling:
+    get:
+      tags:
+        - "Export"
+      summary: "Get export data - Sparkling Wines"
+      description: "Returns export data for the 'sparkling' resource in the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Export data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/exporting/fresh_grapes:
+    get:
+      tags:
+        - "Export"
+      summary: "Get export data - Fresh Grapes"
+      description: "Returns export data for the 'fresh_grapes' resource in the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Export data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+  /api/exporting/grape_juice:
+    get:
+      tags:
+        - "Export"
+      summary: "Get export data - Grape Juice"
+      description: "Returns export data for the 'grape_juice' resource in the specified year"
+      parameters:
+        - name: "year"
+          in: "query"
+          required: false
+          type: "string"
+          description: "Year to filter the data"
+      security:
+        - Bearer: [ ]
+      responses:
+        200:
+          description: "Export data successfully obtained"
+        401:
+          description: "Unauthorized"
+
+securityDefinitions:
+  Bearer:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+security:
+  - Bearer: [ ]
