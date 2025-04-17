@@ -38,7 +38,7 @@ This project is a Flask application that provides data extraction services and u
 
 1. Clone the repository:
     ```sh
-    git clone <REPOSITORY_URL>
+    git clone https://github.com/ManoelSilva/embrapa-viticulture-api
     cd embrapa-viticulture-api
     ```
 
