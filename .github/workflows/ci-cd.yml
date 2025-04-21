@@ -1,117 +1,55 @@
-name: 'Terraform'
+name: 'EC2 Deploy'
 
 on:
   push:
     branches: [ "main" ]
-    paths:
-      - '../../infra/**'
-      - 'app.py'
-      - 'requirements.txt'
-      - 'service/**'
-      - 'routes/**'
-      - 'config/**'
   pull_request:
     branches: [ "main" ]
-    paths:
-      - '../../infra/**'
-      - 'app.py'
-      - 'requirements.txt'
-      - 'service/**'
-      - 'routes/**'
-      - 'config/**'
-
-env:
-  TF_VERSION: '1.5.7'
 
 jobs:
-  terraform:
-    name: 'Terraform'
+  deploy:
     runs-on: ubuntu-latest
     environment: production
-
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+      - name: Set up Python (for tar)
+        uses: actions/setup-python@v4
         with:
-          terraform_version: ${{ env.TF_VERSION }}
+          python-version: '3.x'
 
-      - name: Terraform Init
-        id: init
-        run: terraform init
-        working-directory: ./infra
-
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate -no-color
-        working-directory: ./infra
-
-      - name: Terraform Plan
-        id: plan
-        if: github.event_name == 'pull_request'
-        run: terraform plan -no-color
-        working-directory: ./infra
-        continue-on-error: true
-
-      - name: Update Pull Request
-        uses: actions/github-script@v6
-        if: github.event_name == 'pull_request'
-        env:
-          PLAN: "${{ steps.plan.outputs.stdout }}"
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const output = `#### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-            <details><summary>Show Plan</summary>
-
-            \`\`\`terraform\n
-            ${process.env.PLAN}
-            \`\`\`
-
-            </details>`;
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.name,
-              body: output
-            })
-
-      - name: Terraform Plan Status
-        if: steps.plan.outcome == 'failure'
-        run: exit 1
-
-      - name: Get runner public IP
-        id: ip
+      - name: Check EC2 instance state
+        id: ec2state
         run: |
-          echo "GIT_IP=$(curl -s https://api.ipify.org)/32" >> $GITHUB_ENV
+          STATE=$(aws ec2 describe-instances --instance-ids ${{ secrets.EC2_INSTANCE_ID }} --query "Reservations[0].Instances[0].State.Name" --output text)
+          echo "state=$STATE" >> $GITHUB_OUTPUT
 
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -var="ssh_access_cidr=$GIT_IP"
-        working-directory: ./infra
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Get EC2 Public IP
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        id: get_ip
+      - name: Start EC2 instance if stopped
+        if: steps.ec2state.outputs.state != 'running'
         run: |
-          IP=$(terraform output -raw public_ip)
-          echo "public_ip=$IP" >> $GITHUB_OUTPUT
-        working-directory: ./infra
+          aws ec2 start-instances --instance-ids ${{ secrets.EC2_INSTANCE_ID }}
+          echo "Waiting for EC2 to enter 'running' state..."
+          for i in {1..30}; do
+            STATE=$(aws ec2 describe-instances --instance-ids ${{ secrets.EC2_INSTANCE_ID }} --query "Reservations[0].Instances[0].State.Name" --output text)
+            if [ "$STATE" = "running" ]; then
+              echo "EC2 is running."
+              break
+            fi
+            sleep 10
+          done
 
       - name: Wait for SSH
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: |
           for i in {1..30}; do
-            if nc -z -w 1 ${{ steps.get_ip.outputs.public_ip }} 22; then
+            if nc -z -w 1 ${{ secrets.EC2_PUBLIC_IP }} 22; then
               echo "SSH is available"
               exit 0
             fi
@@ -121,16 +59,55 @@ jobs:
           echo "SSH not available after 5 minutes"
           exit 1
 
-      - name: Deploy Application
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        uses: appleboy/ssh-action@master
+      - name: Prepare deployment package
+        run: |
+          mkdir -p deploy/service deploy/routes deploy/config
+          cp app.py requirements.txt logger_serialize.py deploy/
+          cp -r service/* deploy/service/
+          cp -r routes/* deploy/routes/
+          cp -r config/* deploy/config/
+          cp infra/deploy.sh deploy/
+          tar -cf deploy.tar -C deploy .
+
+      - name: Upload deployment package to EC2
+        uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ steps.get_ip.outputs.public_ip }}
+          host: ${{ secrets.EC2_PUBLIC_IP }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "deploy.tar"
+          target: "/tmp/"
+
+      - name: Stop app service on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_PUBLIC_IP }}
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Download deployment script
-            wget https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/infrastructure/deploy.sh
+            sudo systemctl stop embrapa-viticulture || true
+
+      - name: Deploy and restart app on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_PUBLIC_IP }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            rm -rf /tmp/deploy
+            mkdir -p /tmp/deploy
+            tar -xf /tmp/deploy.tar -C /tmp/deploy
+            cd /tmp/deploy
             chmod +x deploy.sh
-            # Execute deployment script
-            GITHUB_REPOSITORY=${{ github.repository }} ./deploy.sh 
+            dos2unix deploy.sh || true
+            ./deploy.sh
+
+      - name: Check app service status
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_PUBLIC_IP }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo systemctl status embrapa-viticulture
+            sudo journalctl -u embrapa-viticulture -n 50 

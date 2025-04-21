@@ -7,13 +7,13 @@ variable "aws_region" {
 variable "instance_type" {
   description = "EC2 instance type"
   type        = string
-  default     = "t2.micro"
+  default     = "t2.micro" # Free tier
 }
 
 variable "ami_id" {
   description = "AMI ID for the EC2 instance"
   type        = string
-  default     = "ami-084568db4383264d4"  # Ubuntu 22.04 LTS
+  default     = "ami-084568db4383264d4"  # Free tier
 }
 
 variable "vpc_cidr" {
@@ -31,7 +31,7 @@ variable "subnet_cidr" {
 variable "ssh_access_cidr" {
   description = "CIDR block for SSH access (your IP address with /32)"
   type        = string
-  default     = ""  # Change this to your IP address in production
+  default     = ""  # Change this to desired IP address
 }
 
 variable "key_name" {
