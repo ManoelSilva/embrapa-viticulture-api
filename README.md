@@ -59,7 +59,6 @@ Create a `.env` file in the project root and define the following environment va
 ```env
 SECRET_KEY=your_secret_key
 JWT_SECRET_KEY=your_jwt_secret_key
-DATABASE_URL=your_database_url
 ```
 
 ## Running the Application
