@@ -66,3 +66,4 @@ class App:
 
 
 app = App().create_app()
+
