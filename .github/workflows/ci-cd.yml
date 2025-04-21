@@ -59,6 +59,17 @@ jobs:
           echo "SSH not available after 5 minutes"
           exit 1
 
+      - name: Get runner public IP
+        id: runner_ip
+        run: echo "GIT_IP=$(curl -s https://api.ipify.org)/32" >> $GITHUB_ENV
+
+      - name: Authorize SSH from runner IP
+        run: |
+          aws ec2 authorize-security-group-ingress \
+            --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} \
+            --protocol tcp --port 22 \
+            --cidr $GIT_IP
+
       - name: Prepare deployment package
         run: |
           mkdir -p deploy/service deploy/routes deploy/config
@@ -110,4 +121,12 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             sudo systemctl status embrapa-viticulture
-            sudo journalctl -u embrapa-viticulture -n 50 
+            sudo journalctl -u embrapa-viticulture -n 50
+
+      - name: Remove SSH access from runner IP
+        if: always()
+        run: |
+          aws ec2 revoke-security-group-ingress \
+            --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} \
+            --protocol tcp --port 22 \
+            --cidr $GIT_IP 
