@@ -31,7 +31,7 @@ variable "subnet_cidr" {
 variable "ssh_access_cidr" {
   description = "CIDR block for SSH access (your IP address with /32)"
   type        = string
-  default     = "0.0.0.0/32"  # Change this to your IP address in production
+  default     = ""  # Change this to your IP address in production
 }
 
 variable "key_name" {
