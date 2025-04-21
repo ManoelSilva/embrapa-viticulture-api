@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Set up Python (for SAST and tests)
         uses: actions/setup-python@v4
         with:
@@ -19,7 +22,8 @@ jobs:
       - name: Install dependencies for SAST and tests
         run: |
           python -m pip install --upgrade pip
-          pip install bandit pytest
+          pip install -r requirements.txt
+          pip install bandit
 
       - name: Static Application Security Testing (SAST)
         run: |
@@ -28,9 +32,6 @@ jobs:
       - name: Run Python tests
         run: |
           pytest
-
-      - name: Checkout code
-        uses: actions/checkout@v3
 
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v2
