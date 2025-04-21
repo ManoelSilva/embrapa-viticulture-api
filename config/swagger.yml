@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   title: "EMBRAPA Viticulture API"
-  description: "Tech Challenge - API to collect data from VitiBrasil website"
+  description: "Tech Challenge - API to collect data from VitiBrasil website."
   version: "1.0.0"
 
 paths:
