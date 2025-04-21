@@ -104,7 +104,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "infra/deploy.sh"
-          target: "/home/ubuntu/deploy.sh"
+          target: "/home/ubuntu/"
+          strip_components: 1
 
       - name: Deploy and restart app on EC2
         uses: appleboy/ssh-action@v1.0.3
