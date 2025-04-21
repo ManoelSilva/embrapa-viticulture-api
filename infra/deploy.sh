@@ -1,25 +1,29 @@
 #!/bin/bash
 set -e
 
+# Variables
+USER_HOME="/home/ubuntu"
+APP_DIR="$USER_HOME/embrapa-viticulture-api"
+REPO_URL="https://github.com/${GITHUB_REPOSITORY}.git"
+COMMIT_SHA="${GITHUB_SHA}"
+
 # Update system packages and install required tools
 echo "Updating system packages and installing dependencies..."
 sudo apt-get update
 sudo apt-get install -y python3-pip python3-venv git dos2unix
 
-USER_HOME="/home/ubuntu"
-APP_DIR="$USER_HOME/embrapa-viticulture-api"
-
-# Remove and recreate app directory
-rm -rf "$APP_DIR"
-mkdir -p "$APP_DIR"
-
-# Copy application files from /tmp/deploy
-cp -r /tmp/deploy/* "$APP_DIR/"
-
-# Verify files are copied correctly
-cd "$APP_DIR"
-echo "Current directory: $(pwd)"
-ls -la
+# Clone or pull latest code
+echo "Deploying from $REPO_URL at commit $COMMIT_SHA"
+if [ -d "$APP_DIR/.git" ]; then
+  cd "$APP_DIR"
+  git fetch --all
+  git reset --hard "$COMMIT_SHA"
+else
+  rm -rf "$APP_DIR"
+  git clone "$REPO_URL" "$APP_DIR"
+  cd "$APP_DIR"
+  git checkout "$COMMIT_SHA"
+fi
 
 # Set up Python virtual environment
 python3 -m venv "$APP_DIR/venv"

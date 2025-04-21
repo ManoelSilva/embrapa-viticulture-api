@@ -1,6 +1,6 @@
 # Infrastructure as Code (IaC) for Embrapa Viticulture API
 
-This directory contains the Terraform configuration for deploying the Embrapa Viticulture API on AWS.
+This directory contains the Terraform configuration and deployment scripts for the Embrapa Viticulture API on AWS.
 
 ## Prerequisites
 
@@ -8,7 +8,7 @@ This directory contains the Terraform configuration for deploying the Embrapa Vi
 - AWS CLI configured with credentials
 - Terraform installed locally
 - GitHub repository with GitHub Actions enabled
-- SSH key pair for EC2 instance access
+- SSH key pair for EC2 instance access (private key in GitHub secrets, public key on EC2)
 
 ## Setup Instructions
 
@@ -39,26 +39,38 @@ This directory contains the Terraform configuration for deploying the Embrapa Vi
    - `AWS_ACCESS_KEY_ID`: Your AWS access key
    - `AWS_SECRET_ACCESS_KEY`: Your AWS secret key
    - `SSH_PRIVATE_KEY`: Your SSH private key for EC2 instance access
+   - `EC2_INSTANCE_ID`: The EC2 instance ID
+   - `EC2_PUBLIC_IP`: The EC2 instance public IP
+   - `EC2_SECURITY_GROUP_ID`: The security group ID for the EC2 instance
 
 2. The GitHub Actions workflow will automatically:
-   - Run on pull requests to validate changes
-   - Deploy changes when merged to main branch
-   - Post plan results as comments on pull requests
-   - Deploy the application after infrastructure provisioning
+   - Run SAST (Static Application Security Testing) using Bandit
+   - Run Python tests using pytest
+   - Deploy changes when merged to the main branch
+   - Dynamically allow SSH from the runner's IP during deployment and remove it after
+   - SSH into the EC2 instance and run `deploy.sh`, which pulls the latest code and restarts the service
 
 ## Deployment Process
 
-The deployment process includes:
+Deployment is now performed by pulling the latest code from GitHub directly on the EC2 instance. There is no longer any packaging or file copying from the runner:
 
-1. Infrastructure provisioning (EC2, VPC, etc.)
-2. Application deployment:
+1. **Infrastructure provisioning** (EC2, VPC, etc.)
+2. **Application deployment:**
    - System updates and package installation
    - Python virtual environment setup
-   - Application code deployment
+   - **Application code is pulled from GitHub** (using `git pull` or `git clone`)
    - Systemd service configuration
-   - Application service start
+   - Application service restart
 
-The application will be automatically deployed and started after the infrastructure is provisioned.
+### Local Deployment Script
+
+You can also deploy manually using the provided PowerShell script:
+
+```powershell
+./deploy_locally.ps1 <EC2_PUBLIC_IP>
+```
+- This script will SSH into the EC2 instance, pull the latest code from GitHub, install dependencies, and restart the service.
+- Make sure your SSH private key is available at `~/.ssh/id_rsa` and your repository is set in the script (default: `manoelsilva/embrapa-viticulture-api`).
 
 ## Infrastructure Components
 
@@ -72,11 +84,17 @@ The application will be automatically deployed and started after the infrastruct
 
 ## Security Notes
 
-- The security group allows SSH (port 22) and HTTP (port 80) from anywhere
-- Consider restricting SSH access to specific IP ranges in production
-- Use AWS Systems Manager Session Manager for secure access instead of SSH when possible
-- The application runs under a dedicated systemd service
-- The application directory is owned by the ubuntu user
+- The security group allows HTTP (port 80) from anywhere by default, and SSH (port 22) only to configured var ssh_access_cidr [variables.tf](variables.tf), but **the GitHub Actions workflow dynamically restricts SSH access to the runner's IP during deployment and removes it after**.
+- Consider restricting SSH access to specific IP ranges in production.
+- Use AWS Systems Manager Session Manager for secure access instead of SSH when possible.
+- The application runs under a dedicated systemd service.
+- The application directory is owned by the ubuntu user.
+
+## CI/CD Pipeline Notes
+
+- SAST (Bandit) and Python tests (pytest) are run before any deployment.
+- Deployment only proceeds if both SAST and tests pass.
+- The deployed code is always the exact commit that triggered the workflow.
 
 ## Cost Considerations
 
