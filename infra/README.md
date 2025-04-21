@@ -40,11 +40,9 @@ This directory contains the Terraform configuration and deployment scripts for t
    - `AWS_SECRET_ACCESS_KEY`: Your AWS secret key
    - `SSH_PRIVATE_KEY`: Your SSH private key for EC2 instance access
    - `EC2_INSTANCE_ID`: The EC2 instance ID
-   - `EC2_PUBLIC_IP`: The EC2 instance public IP
    - `EC2_SECURITY_GROUP_ID`: The security group ID for the EC2 instance
 
 2. The GitHub Actions workflow will automatically:
-   - Run SAST (Static Application Security Testing) using Bandit
    - Run Python tests using pytest
    - Deploy changes when merged to the main branch
    - Dynamically allow SSH from the runner's IP during deployment and remove it after
@@ -92,8 +90,8 @@ You can also deploy manually using the provided PowerShell script:
 
 ## CI/CD Pipeline Notes
 
-- SAST (Bandit) and Python tests (pytest) are run before any deployment.
-- Deployment only proceeds if both SAST and tests pass.
+- Python tests (pytest) are run before any deployment.
+- Deployment only proceeds if tests pass.
 - The deployed code is always the exact commit that triggered the workflow.
 
 ## Cost Considerations
