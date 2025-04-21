@@ -46,6 +46,17 @@ jobs:
             sleep 10
           done
 
+      - name: Get runner public IP
+        id: runner_ip
+        run: echo "GIT_IP=$(curl -s https://api.ipify.org)/32" >> $GITHUB_ENV
+
+      - name: Authorize SSH from runner IP
+        run: |
+          aws ec2 authorize-security-group-ingress \
+            --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} \
+            --protocol tcp --port 22 \
+            --cidr $GIT_IP
+
       - name: Wait for SSH
         run: |
           for i in {1..30}; do
@@ -58,17 +69,6 @@ jobs:
           done
           echo "SSH not available after 5 minutes"
           exit 1
-
-      - name: Get runner public IP
-        id: runner_ip
-        run: echo "GIT_IP=$(curl -s https://api.ipify.org)/32" >> $GITHUB_ENV
-
-      - name: Authorize SSH from runner IP
-        run: |
-          aws ec2 authorize-security-group-ingress \
-            --group-id ${{ secrets.EC2_SECURITY_GROUP_ID }} \
-            --protocol tcp --port 22 \
-            --cidr $GIT_IP
 
       - name: Prepare deployment package
         run: |
