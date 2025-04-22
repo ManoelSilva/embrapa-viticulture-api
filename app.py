@@ -2,7 +2,7 @@ import os
 from loguru import logger
 
 from logger_serialize import serialize
-from flask import Flask, send_from_directory
+from flask import Flask, send_from_directory, redirect
 from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint
 
@@ -61,6 +61,10 @@ class App:
         @self.app.route('/static/swagger.yml')
         def send_swagger():
             return send_from_directory(os.path.dirname(__file__), 'config/swagger.yml')
+
+        @self.app.route('/')
+        def root_swagger():
+            return redirect('/swagger')
 
         return self.app
 

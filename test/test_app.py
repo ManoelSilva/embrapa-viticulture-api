@@ -76,3 +76,15 @@ class TestApp(object):
         assert 'JWT_SECRET_KEY' in flask_app.config
         mock_logger.remove.assert_called_once_with(0)
         mock_logger.add.assert_called_once()
+
+    @patch('app.logger')
+    def test_root_redirects_to_swagger(self, mock_logger):
+        """
+        Testa se a rota '/' faz redirect para '/swagger'
+        """
+        app_instance = App()
+        app = app_instance.create_app()
+        with app.test_client() as client:
+            response = client.get('/')
+            assert response.status_code == 302  # HTTP 302 Found (redirect)
+            assert response.headers['Location'].endswith('/swagger')
