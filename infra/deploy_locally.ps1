@@ -21,10 +21,11 @@ if [ -d "$APP_DIR/.git" ]; then
   cd "$APP_DIR"
   git fetch --all
   git pull
+  cd "$APP_DIR"
 else
   rm -rf "$APP_DIR"
   git clone "$REPO_URL" "$APP_DIR"
-  cd "$APP_DIR/src"
+  cd "$APP_DIR"
 fi
 
 python3 -m venv "$APP_DIR/src/venv"

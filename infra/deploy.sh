@@ -21,7 +21,7 @@ if [ -d "$APP_DIR/.git" ]; then
 else
   rm -rf "$APP_DIR"
   git clone "$REPO_URL" "$APP_DIR"
-  cd "$APP_DIR/src"
+  cd "$APP_DIR"
   git checkout "$COMMIT_SHA"
 fi
 
@@ -44,7 +44,7 @@ User=ubuntu
 Group=ubuntu
 WorkingDirectory=$USER_HOME/embrapa-viticulture-api/src
 Environment="PATH=$USER_HOME/embrapa-viticulture-api/src/venv/bin"
-Environment="PYTHONPATH=$USER_HOME/embrapa-viticulture-api/src"
+Environment="PYTHONPATH=$USER_HOME/embrapa-viticulture-api"
 ExecStart=$USER_HOME/embrapa-viticulture-api/src/venv/bin/waitress-serve --host=0.0.0.0 --port=5000 app:app
 Restart=always
 RestartSec=10
