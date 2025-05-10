@@ -5,7 +5,7 @@ from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint
 from loguru import logger
 
-from logger_serialize import serialize
+from src.logger_serialize import serialize
 from src.config.auth import AuthConfig
 from src.routes.api_default import ApiDefaultRoutes
 from src.routes.api_exporting import ApiExportingRoutes
