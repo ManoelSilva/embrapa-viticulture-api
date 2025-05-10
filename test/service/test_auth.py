@@ -1,9 +1,10 @@
 import datetime
 
-from service.auth import AuthService
 import pytest
 from unittest.mock import patch, Mock
 import pandas as pd
+
+from src.service.auth import AuthService
 
 
 class TestAuthService(object):
@@ -50,8 +51,8 @@ class TestAuthService(object):
         auth_service._duckdb.user_exists.assert_not_called()
         auth_service._duckdb.insert_user.assert_not_called()
 
-    @patch('service.auth.create_access_token')
-    @patch('service.auth.check_password_hash', return_value=True)
+    @patch('src.service.auth.create_access_token')
+    @patch('src.service.auth.check_password_hash', return_value=True)
     def test_authenticate_user_success(self, mock_check_password, mock_create_token, auth_service):
         """
         Checks if a valid user receives an access token

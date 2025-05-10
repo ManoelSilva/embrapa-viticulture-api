@@ -1,6 +1,6 @@
 from flask import request, jsonify
-from routes.api_routes import BaseApiRoutes
-from service.auth import AuthService
+from src.routes.api_routes import BaseApiRoutes
+from src.service.auth import AuthService
 
 
 class ApiAuthRoutes(BaseApiRoutes):

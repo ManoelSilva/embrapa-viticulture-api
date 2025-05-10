@@ -1,7 +1,7 @@
 from flask import request
 from flask_jwt_extended import jwt_required
 
-from routes.api_routes import BaseApiRoutes
+from src.routes.api_routes import BaseApiRoutes
 
 
 class ApiImportRoutes(BaseApiRoutes):

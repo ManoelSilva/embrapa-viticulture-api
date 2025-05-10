@@ -1,8 +1,8 @@
 from duckdb.experimental.spark import DataFrame
 from flask import jsonify, Response
 
-from service.duck_db import DuckDBService
-from service.scrapper import EMBRAPAScrapperService
+from src.service.duck_db import DuckDBService
+from src.service.scrapper import EMBRAPAScrapperService
 
 
 class EMBRAPAExtractorService(object):

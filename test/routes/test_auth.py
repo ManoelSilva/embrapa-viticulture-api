@@ -2,8 +2,9 @@ from unittest.mock import MagicMock
 from flask import Flask
 import pytest
 from flask_jwt_extended import create_access_token, JWTManager
-from routes.auth import ApiAuthRoutes
-from service.auth import AuthService
+
+from src.routes.auth import ApiAuthRoutes
+from src.service.auth import AuthService
 
 
 class TestAuthRoutes(object):

@@ -1,7 +1,9 @@
-from service.scrapper import EMBRAPAScrapperService
-import pytest
 from unittest.mock import patch, Mock
+
 import pandas as pd
+import pytest
+
+from src.service.scrapper import EMBRAPAScrapperService
 
 
 class TestEMBRAPAScrapperService(object):
@@ -9,9 +11,9 @@ class TestEMBRAPAScrapperService(object):
     def scrapper_service(self):
         return EMBRAPAScrapperService()
 
-    @patch('service.scrapper.requests.get')
-    @patch('service.scrapper.BeautifulSoup')
-    @patch('service.scrapper.pd.read_html')
+    @patch('src.service.scrapper.requests.get')
+    @patch('src.service.scrapper.BeautifulSoup')
+    @patch('src.service.scrapper.pd.read_html')
     def test_scrape_and_parse_tables_success(self, mock_read_html, mock_bs, mock_get, scrapper_service):
         """
         Checks if data is correctly scraped and parsed when valid parameters are provided
@@ -34,7 +36,7 @@ class TestEMBRAPAScrapperService(object):
         mock_soup.find.assert_called_once_with('table', class_='tb_base tb_dados')
         mock_read_html.assert_called_once()
 
-    @patch('service.scrapper.requests.get')
+    @patch('src.service.scrapper.requests.get')
     def test_scrape_and_parse_tables_invalid_resource(self, mock_get, scrapper_service):
         """
         Checks if empty DataFrame is returned when invalid resource is provided
@@ -44,7 +46,7 @@ class TestEMBRAPAScrapperService(object):
         assert result.empty
         mock_get.assert_not_called()
 
-    @patch('service.scrapper.requests.get')
+    @patch('src.service.scrapper.requests.get')
     def test_scrape_and_parse_tables_request_exception(self, mock_get, scrapper_service):
         """
         Checks if empty DataFrame is returned when request fails
@@ -56,8 +58,8 @@ class TestEMBRAPAScrapperService(object):
         assert result.empty
         mock_get.assert_called_once()
 
-    @patch('service.scrapper.requests.get')
-    @patch('service.scrapper.BeautifulSoup')
+    @patch('src.service.scrapper.requests.get')
+    @patch('src.service.scrapper.BeautifulSoup')
     def test_scrape_and_parse_tables_no_table_found(self, mock_bs, mock_get, scrapper_service):
         """
         Checks if empty DataFrame is returned when no table is found

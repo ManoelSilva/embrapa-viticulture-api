@@ -1,4 +1,4 @@
-from config.auth import AuthConfig
+from src.config.auth import AuthConfig
 
 
 class TestAuthConfig(object):

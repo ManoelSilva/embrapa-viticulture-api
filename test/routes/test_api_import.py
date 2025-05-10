@@ -2,8 +2,9 @@ from unittest.mock import MagicMock
 from flask import Flask
 import pytest
 from flask_jwt_extended import create_access_token, JWTManager
-from routes.api_import import ApiImportRoutes
-from service.extractor import EMBRAPAExtractorService
+
+from src.routes.api_import import ApiImportRoutes
+from src.service.extractor import EMBRAPAExtractorService
 
 
 class TestApiImportRoutes(object):

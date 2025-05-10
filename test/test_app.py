@@ -1,7 +1,9 @@
+from unittest.mock import patch
+
 import pytest
 from flask_jwt_extended import create_access_token, JWTManager
-from app import App
-from unittest.mock import patch
+
+from src.app import App
 
 
 class TestApp(object):
@@ -30,7 +32,7 @@ class TestApp(object):
                 client.environ_base = {'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
                 yield client
 
-    @patch('app.logger')
+    @patch('src.app.logger')
     def test_app_creation(self, mock_logger):
         """
         Test if the Flask application is created successfully
@@ -41,7 +43,7 @@ class TestApp(object):
         mock_logger.remove.assert_called_once_with(0)
         mock_logger.add.assert_called_once()
 
-    @patch('app.logger')
+    @patch('src.app.logger')
     def test_blueprints_registered(self, mock_logger):
         """
         Test if blueprints are registered
@@ -56,7 +58,7 @@ class TestApp(object):
         mock_logger.remove.assert_called_once_with(0)
         mock_logger.add.assert_called_once()
 
-    @patch('app.logger')
+    @patch('src.app.logger')
     def test_app_logging_configuration(self, mock_logger):
         """
         Test if logging is properly configured during app initialization
@@ -66,7 +68,7 @@ class TestApp(object):
         mock_logger.add.assert_called_once()
         assert hasattr(app_instance, 'app')
 
-    @patch('app.logger')
+    @patch('src.app.logger')
     def test_jwt_configuration(self, mock_logger):
         """
         Test if JWT is properly configured
@@ -77,7 +79,7 @@ class TestApp(object):
         mock_logger.remove.assert_called_once_with(0)
         mock_logger.add.assert_called_once()
 
-    @patch('app.logger')
+    @patch('src.app.logger')
     def test_root_redirects_to_swagger(self, mock_logger):
         """
         Testa se a rota '/' faz redirect para '/swagger'
