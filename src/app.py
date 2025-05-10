@@ -1,20 +1,20 @@
 import os
-from loguru import logger
 
-from logger_serialize import serialize
 from flask import Flask, send_from_directory, redirect
 from flask_jwt_extended import JWTManager
 from flask_swagger_ui import get_swaggerui_blueprint
+from loguru import logger
 
-from config.auth import AuthConfig
-from routes.auth import ApiAuthRoutes
-from routes.api_default import ApiDefaultRoutes
-from routes.api_exporting import ApiExportingRoutes
-from routes.api_import import ApiImportRoutes
-from routes.api_processing import ApiProcessingRoutes
-from service.auth import AuthService
-from service.duck_db import DuckDBService
-from service.extractor import EMBRAPAExtractorService
+from logger_serialize import serialize
+from src.config.auth import AuthConfig
+from src.routes.api_default import ApiDefaultRoutes
+from src.routes.api_exporting import ApiExportingRoutes
+from src.routes.api_import import ApiImportRoutes
+from src.routes.api_processing import ApiProcessingRoutes
+from src.routes.auth import ApiAuthRoutes
+from src.service.auth import AuthService
+from src.service.duck_db import DuckDBService
+from src.service.extractor import EMBRAPAExtractorService
 
 
 class App:

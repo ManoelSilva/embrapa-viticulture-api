@@ -2,9 +2,9 @@ name: 'EC2 Deploy'
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "feature/cloud_deploy" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "feature/cloud_deploy" ]
 
 jobs:
   deploy:

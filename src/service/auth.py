@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token
 import datetime
-from service.duck_db import DuckDBService
+from src.service.duck_db import DuckDBService
 
 
 class AuthService:

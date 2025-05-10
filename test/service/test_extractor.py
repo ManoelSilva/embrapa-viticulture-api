@@ -1,8 +1,10 @@
-from service.extractor import EMBRAPAExtractorService
-import pytest
 from unittest.mock import patch, Mock
+
 import pandas as pd
+import pytest
 from flask import Flask
+
+from src.service.extractor import EMBRAPAExtractorService
 
 
 class TestEMBRAPAExtractorService(object):
@@ -19,7 +21,7 @@ class TestEMBRAPAExtractorService(object):
         duck_db_mock.get_views.return_value = []
         return EMBRAPAExtractorService(duck_db_mock)
 
-    @patch('service.extractor.EMBRAPAScrapperService.scrape_and_parse_tables')
+    @patch('src.service.extractor.EMBRAPAScrapperService.scrape_and_parse_tables')
     def test_extract_data_from_duckdb(self, mock_scrape, app, extractor_service):
         """
         Checks if data is retrieved from DuckDB when the view exists
@@ -38,7 +40,7 @@ class TestEMBRAPAExtractorService(object):
             extractor_service._duck_db.fetch_data.assert_called_once_with('processing_hybrid_americans')
             mock_scrape.assert_not_called()
 
-    @patch('service.extractor.EMBRAPAScrapperService.scrape_and_parse_tables')
+    @patch('src.service.extractor.EMBRAPAScrapperService.scrape_and_parse_tables')
     def test_extract_data_from_scrapper_when_view_not_exists(self, mock_scrape, app, extractor_service):
         """
         Checks if data is scraped and loaded when the view does not exist in DuckDB
@@ -58,7 +60,7 @@ class TestEMBRAPAExtractorService(object):
             extractor_service._duck_db.create_dataframe_view.assert_called_once_with('processing_hybrid_americans',
                                                                                      mock_df)
 
-    @patch('service.extractor.EMBRAPAScrapperService.scrape_and_parse_tables')
+    @patch('src.service.extractor.EMBRAPAScrapperService.scrape_and_parse_tables')
     def test_extract_data_from_scrapper_when_duckdb_fails(self, mock_scrape, app, extractor_service):
         """
         Checks if data is scraped and loaded when DuckDB fetch fails

@@ -24,11 +24,11 @@ if [ -d "$APP_DIR/.git" ]; then
 else
   rm -rf "$APP_DIR"
   git clone "$REPO_URL" "$APP_DIR"
-  cd "$APP_DIR"
+  cd "$APP_DIR/src"
 fi
 
-python3 -m venv "$APP_DIR/venv"
-source "$APP_DIR/venv/bin/activate"
+python3 -m venv "$APP_DIR/src/venv"
+source "$APP_DIR/src/venv/bin/activate"
 pip install -r requirements.txt
 pip install waitress
 
@@ -40,10 +40,10 @@ After=network.target
 [Service]
 User=ubuntu
 Group=ubuntu
-WorkingDirectory=/home/ubuntu/embrapa-viticulture-api
-Environment="PATH=/home/ubuntu/embrapa-viticulture-api/venv/bin"
+WorkingDirectory=/home/ubuntu/embrapa-viticulture-api/src
+Environment="PATH=/home/ubuntu/embrapa-viticulture-api/src/venv/bin"
 Environment="PYTHONPATH=/home/ubuntu/embrapa-viticulture-api"
-ExecStart=/home/ubuntu/embrapa-viticulture-api/venv/bin/waitress-serve --host=0.0.0.0 --port=5000 app:app
+ExecStart=/home/ubuntu/embrapa-viticulture-api/src/venv/bin/waitress-serve --host=0.0.0.0 --port=5000 app:app
 Restart=always
 RestartSec=10
 StandardOutput=journal

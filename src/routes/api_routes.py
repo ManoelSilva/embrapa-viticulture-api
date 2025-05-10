@@ -1,7 +1,7 @@
 from flask import Blueprint, Request
 from abc import ABC, abstractmethod
 
-from service.extractor import EMBRAPAExtractorService
+from src.service.extractor import EMBRAPAExtractorService
 
 
 class BaseApiRoutes(ABC):

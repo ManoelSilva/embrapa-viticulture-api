@@ -1,6 +1,6 @@
 import pytest
 import pandas as pd
-from service.duck_db import DuckDBService
+from src.service.duck_db import DuckDBService
 
 
 class TestDuckdbService(object):
