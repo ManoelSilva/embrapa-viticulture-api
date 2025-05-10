@@ -60,7 +60,7 @@ class App:
     def create_app(self):
         @self.app.route('/static/swagger.yml')
         def send_swagger():
-            return send_from_directory(os.path.dirname(__file__), 'config/swagger.yml')
+            return send_from_directory(os.path.dirname(__file__), './config/swagger.yml')
 
         @self.app.route('/')
         def root_swagger():
