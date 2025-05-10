@@ -1,3 +1,5 @@
+[Versão em Português](README.pt-br.md)
+
 # Embrapa Viticulture API
 
 This project is a Flask application that provides data extraction services and user authentication using JWT. It also includes Swagger documentation for API endpoints.
@@ -6,24 +8,25 @@ This project is a Flask application that provides data extraction services and u
 
 ```
 .
-├── app.py                  # Main application file
-├── config/                 # Configuration files
-│   ├── auth.py            # Authentication configurations
-│   └── swagger.py         # Swagger UI configuration
-├── routes/                 # API route definitions
-│   ├── auth.py            # Authentication routes
-│   ├── api_default.py     # Default API routes
-│   ├── api_processing.py  # Processing data routes
-│   ├── api_exporting.py   # Export data routes
-│   ├── api_import.py      # Import data routes
-│   └── api_routes.py      # Main API routes
-├── service/                # Business logic and services
-│   ├── auth.py            # Authentication service
-│   ├── scrapper.py        # Web scraping service
-│   ├── duck_db.py         # Database operations
-│   └── extractor.py       # Data extraction service
-├── test/                   # Unit tests
-├── logger_serialize.py     # Logging configuration
+├── src/                    # Main source code
+│   ├── app.py                  # Main application file
+│   ├── config/                 # Configuration files
+│   │   ├── auth.py            # Authentication configurations
+│   │   └── swagger.py         # Swagger UI configuration
+│   ├── routes/                 # API route definitions
+│   │   ├── auth.py            # Authentication routes
+│   │   ├── api_default.py     # Default API routes
+│   │   ├── api_processing.py  # Processing data routes
+│   │   ├── api_exporting.py   # Export data routes
+│   │   ├── api_import.py      # Import data routes
+│   │   └── api_routes.py      # Main API routes
+│   ├── service/                # Business logic and services
+│   │   ├── auth.py            # Authentication service
+│   │   ├── scrapper.py        # Web scraping service
+│   │   ├── duck_db.py         # Database operations
+│   │   └── extractor.py       # Data extraction service
+│   ├── logger_serialize.py     # Logging configuration
+└── test/                   # Unit tests
 ├── requirements.txt        # Project dependencies
 └── README.md              # Project documentation
 ```
