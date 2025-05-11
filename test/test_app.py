@@ -1,20 +1,23 @@
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
+import os
 
-import pytest
-from flask_jwt_extended import create_access_token, JWTManager
-
-from src.app import App
+# Mock the entire duck_db module before any imports
+mock_duckdb = MagicMock()
+with patch('src.service.duck_db.DuckDBService', mock_duckdb):
+    import pytest
+    from flask_jwt_extended import create_access_token, JWTManager
+    from src.app import App
 
 
 class TestApp(object):
     @pytest.fixture
     def mock_logger(self):
         """Fixture to mock the logger"""
-        with patch('app.logger') as mock:
+        with patch('src.app.logger') as mock:
             yield mock
 
     @pytest.fixture
-    def app(self, mock_logger, app):
+    def app(self, mock_logger):
         """Fixture to create a Flask app instance for testing"""
         app_instance = App()
         app = app_instance.create_app()
@@ -24,7 +27,7 @@ class TestApp(object):
         return app
 
     @pytest.fixture
-    def client(self, app, client):
+    def client(self, app):
         """Fixture to create a test client with JWT authentication"""
         with app.test_client() as client:
             with app.app_context():
@@ -32,7 +35,6 @@ class TestApp(object):
                 client.environ_base = {'HTTP_AUTHORIZATION': f'Bearer {access_token}'}
                 yield client
 
-    @patch('src.app.logger')
     def test_app_creation(self, mock_logger):
         """
         Test if the Flask application is created successfully
@@ -43,7 +45,6 @@ class TestApp(object):
         mock_logger.remove.assert_called_once_with(0)
         mock_logger.add.assert_called_once()
 
-    @patch('src.app.logger')
     def test_blueprints_registered(self, mock_logger):
         """
         Test if blueprints are registered
@@ -58,7 +59,6 @@ class TestApp(object):
         mock_logger.remove.assert_called_once_with(0)
         mock_logger.add.assert_called_once()
 
-    @patch('src.app.logger')
     def test_app_logging_configuration(self, mock_logger):
         """
         Test if logging is properly configured during app initialization
@@ -68,7 +68,6 @@ class TestApp(object):
         mock_logger.add.assert_called_once()
         assert hasattr(app_instance, 'app')
 
-    @patch('src.app.logger')
     def test_jwt_configuration(self, mock_logger):
         """
         Test if JWT is properly configured
@@ -79,7 +78,6 @@ class TestApp(object):
         mock_logger.remove.assert_called_once_with(0)
         mock_logger.add.assert_called_once()
 
-    @patch('src.app.logger')
     def test_root_redirects_to_swagger(self, mock_logger):
         """
         Testa se a rota '/' faz redirect para '/swagger'

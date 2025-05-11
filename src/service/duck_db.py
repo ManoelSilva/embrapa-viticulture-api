@@ -1,39 +1,51 @@
+import os
+
 import duckdb
 from loguru import logger
+import pandas as pd
 from pandas import DataFrame
 
 
 class DuckDBService(object):
+    _DB_DATETIME_ID = 0
+
     def __init__(self):
-        self._con = duckdb.connect()
-        self._duckdb_views = []
+        self._con = duckdb.connect(f'md:?motherduck_token={os.environ["MOTHERDUCK_TOKEN"]}')
+        self._duckdb_tables = self._con.execute("SHOW TABLES").fetchdf()['name'].tolist()
         self._user_column_definitions = {
             "id": "INTEGER",
             "username": "VARCHAR",
             "password": "VARCHAR",
             "created_at": "TIMESTAMP"
         }
+        self._db_datetime_column_definitions = {
+            "id": "INTEGER PRIMARY KEY",
+            "datetime": "TIMESTAMP"
+        }
         self._create_user_table()
+        self._create_datetime_table()
 
-    def fetch_data(self, table_name: str) -> DataFrame | None:
+    def fetch_data(self, table_name: str) -> DataFrame:
         try:
             logger.info(f'Fetching data {table_name} from duckdb')
             return self._con.execute(f'SELECT * FROM {table_name}').fetchdf()
         except Exception as e:
             logger.error(f'Error fetching table {table_name} from duckdb {e}')
-            return None
+            return pd.DataFrame()
 
-    def create_dataframe_view(self, view_name: str, data_frame: DataFrame) -> None:
+    def create_dataframe_table(self, table_name: str, data_frame: DataFrame) -> None:
         try:
-            if view_name not in self._duckdb_views:
-                logger.info(f'Creating view {view_name} in duckdb')
-                self._con.register(f'{view_name}', data_frame)
-                self._duckdb_views.append(view_name)
+            if table_name not in self._duckdb_tables:
+                logger.info(f'Creating table {table_name} in duckdb')
+                self._con.execute(f"CREATE OR REPLACE TABLE {table_name} AS SELECT * FROM {data_frame}")
+                self._con.execute(
+                    f'UPDATE db_datetime SET datetime = CURRENT_TIMESTAMP WHERE id = {self._DB_DATETIME_ID}')
+                self._duckdb_tables.append(table_name)
         except Exception as e:
-            logger.error(f'Error creating view {view_name} in duckdb {e}')
+            logger.error(f'Error creating table {table_name} in duckdb {e}')
 
-    def get_views(self) -> list[str]:
-        return self._duckdb_views
+    def get_tables(self) -> list[str]:
+        return self._duckdb_tables
 
     def user_exists(self, username: str) -> bool:
         try:
@@ -55,9 +67,27 @@ class DuckDBService(object):
 
     def _create_user_table(self) -> None:
         try:
-            columns_definition = ", ".join([f"{col} {dtype}" for col, dtype in self._user_column_definitions.items()])
-            create_user_table_query = f'CREATE TABLE users ({columns_definition})'
+            columns_definition = self._get_columns_definition(self._user_column_definitions)
+            create_user_table_query = f'CREATE TABLE IF NOT EXISTS users ({columns_definition})'
             self._con.execute(create_user_table_query)
             logger.info(f'Table users created successfully with columns: {self._user_column_definitions}')
         except Exception as e:
             logger.error(f'Error creating table users: {e}')
+
+    def _create_datetime_table(self) -> None:
+        try:
+            columns_definition = self._get_columns_definition(self._db_datetime_column_definitions)
+            create_datetime_table_query = \
+                f'CREATE TABLE IF NOT EXISTS db_datetime ({columns_definition})'
+            self._con.execute(create_datetime_table_query)
+            self._con.execute(
+                f'INSERT INTO db_datetime (id, datetime) VALUES ({self._DB_DATETIME_ID}, CURRENT_TIMESTAMP) '
+                f'ON CONFLICT (id) DO NOTHING'
+            )
+            logger.info(f'Table db_datetime created successfully with columns: {self._db_datetime_column_definitions}')
+        except Exception as e:
+            logger.error(f'Error creating table db_datetime: {e}')
+
+    @staticmethod
+    def _get_columns_definition(columns_dict: dict) -> str:
+        return ", ".join([f"{col} {dtype}" for col, dtype in columns_dict.items()])
