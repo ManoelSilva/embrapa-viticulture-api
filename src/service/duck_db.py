@@ -1,5 +1,3 @@
-import os
-
 import duckdb
 from loguru import logger
 import pandas as pd
@@ -10,8 +8,8 @@ class DuckDBService(object):
     _DB_DATETIME_ID = 0
 
     def __init__(self):
-        duckdb.sql("SET home_directory='/tmp'")
-        self._con = duckdb.connect(f'md:winemaking?attach_mode=single&saas_mode=true')
+        self._con = duckdb.connect('local.db')
+        self._con.sql("ATTACH 'md:winemaking'")
         self._duckdb_tables = self._con.execute("SHOW TABLES").fetchdf()['name'].tolist()
         self._user_column_definitions = {
             "id": "INTEGER",
