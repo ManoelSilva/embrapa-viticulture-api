@@ -11,8 +11,8 @@ class DuckDBService(object):
 
     def __init__(self):
         token = os.environ.get('MOTHERDUCK_TOKEN')
-        os.environ['DUCKDB_HOME'] = os.path.expanduser('~')
-        self._con = duckdb.connect(f'md:winemaking?motherduck_token={token}')
+        os.environ['DUCKDB_HOME'] = '/tmp'
+        self._con = duckdb.connect(f'md:winemaking?motherduck_token={token}&home_directory=/tmp')
         self._duckdb_tables = self._con.execute("SHOW TABLES").fetchdf()['name'].tolist()
         self._user_column_definitions = {
             "id": "INTEGER",
