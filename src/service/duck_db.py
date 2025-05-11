@@ -10,9 +10,7 @@ class DuckDBService(object):
     _DB_DATETIME_ID = 0
 
     def __init__(self):
-        token = os.environ.get('MOTHERDUCK_TOKEN')
-        os.environ['DUCKDB_HOME'] = '/tmp'
-        self._con = duckdb.connect(f'md:winemaking?motherduck_token={token}&home_directory=/tmp')
+        self._con = duckdb.connect(f'md:winemaking')
         self._duckdb_tables = self._con.execute("SHOW TABLES").fetchdf()['name'].tolist()
         self._user_column_definitions = {
             "id": "INTEGER",
