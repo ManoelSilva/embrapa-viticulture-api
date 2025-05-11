@@ -8,8 +8,9 @@ class DuckDBService(object):
     _DB_DATETIME_ID = 0
 
     def __init__(self):
-        self._con = duckdb.connect('local.db')
-        self._con.sql("ATTACH 'md:winemaking'")
+        self._con = duckdb.connect()
+        self._con.sql("ATTACH 'md:winemaking' AS winemaking")
+        self._con.sql('USE winemaking')
         self._duckdb_tables = self._con.execute("SHOW TABLES").fetchdf()['name'].tolist()
         self._user_column_definitions = {
             "id": "INTEGER",
