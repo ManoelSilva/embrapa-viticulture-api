@@ -35,7 +35,7 @@ class DuckDBService(object):
         try:
             if table_name not in self._duckdb_tables:
                 logger.info(f'Creating table {table_name} in duckdb')
-                self._con.execute(f"CREATE OR REPLACE TABLE {table_name} AS SELECT * FROM {data_frame}")
+                self._con.execute(f"CREATE OR REPLACE TABLE {table_name} AS SELECT * FROM data_frame")
                 self._con.execute(
                     f'UPDATE db_datetime SET datetime = CURRENT_TIMESTAMP WHERE id = {self._DB_DATETIME_ID}')
                 self._duckdb_tables.append(table_name)
