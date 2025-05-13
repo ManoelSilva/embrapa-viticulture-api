@@ -26,6 +26,6 @@ class BaseApiRoutes(ABC):
         pass
 
     @staticmethod
-    def _get_year_param(request: Request) -> str | None:
+    def _get_year_param(request: Request) -> int | None:
         """Helper method to get the year parameter from the request"""
         return request.args.get('year')

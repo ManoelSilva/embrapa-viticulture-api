@@ -8,14 +8,12 @@ class TestDuckdbService(object):
     @pytest.fixture
     def mock_connection(self):
         mock_con = MagicMock()
-        # Mock the initial SHOW TABLES call
-        mock_con.execute.return_value.fetchdf.return_value = pd.DataFrame({'name': []})
         return mock_con
 
     @pytest.fixture
     def duckdb_service(self, mock_connection):
         with patch('src.service.duck_db.duckdb.connect', return_value=mock_connection):
-            with patch('src.service.duck_db.os.environ', {'MOTHERDUCK_TOKEN': 'fake_token'}):
+            with patch('os.environ', {'MOTHERDUCK_TOKEN': 'fake_token'}):
                 service = DuckDBService()
                 service._con = mock_connection
                 service._duckdb_tables = []
