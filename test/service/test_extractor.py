@@ -3,6 +3,7 @@ from unittest.mock import patch, Mock
 import pandas as pd
 import pytest
 from flask import Flask
+from pydantic import ValidationError
 
 from src.service.extractor import EMBRAPAExtractorService
 
@@ -85,3 +86,38 @@ class TestEMBRAPAExtractorService(object):
             mock_scrape.assert_called_once_with(resource='processing', sub_resource='hybrid_americans', year=None)
             extractor_service._duck_db.create_dataframe_table.assert_called_once_with('processing_hybrid_americans',
                                                                                       mock_df)
+
+    def test_get_validated_year(self, extractor_service):
+        """
+        Tests the _get_validated_year method with different year inputs
+        """
+        # Test with valid year
+        assert extractor_service._get_validated_year(2023) == "2023"
+
+        # Test with None year
+        assert extractor_service._get_validated_year(None) is None
+
+        # Test with invalid year (should raise ValidationError)
+        with pytest.raises(ValidationError):
+            extractor_service._get_validated_year(1899)
+
+    def test_is_data_expired(self, extractor_service):
+        """
+        Tests the _is_data_expired method with different datetime scenarios
+        """
+        old_datetime = pd.Timestamp.now() - pd.Timedelta(minutes=31)
+        extractor_service._duck_db.fetch_data.return_value = pd.DataFrame({'datetime': [old_datetime]})
+        assert extractor_service._is_data_expired() is True
+
+        recent_datetime = pd.Timestamp.now() - pd.Timedelta(minutes=29)
+        extractor_service._duck_db.fetch_data.return_value = pd.DataFrame({'datetime': [recent_datetime]})
+        assert extractor_service._is_data_expired() is False
+
+    def test_extract_data_with_invalid_year(self, app, extractor_service):
+        """
+        Tests extract_data method with an invalid year input
+        """
+        with app.app_context():
+            response = extractor_service.extract_data('processing', 'hybrid_americans', year=1899)
+            assert response.status_code == 400
+            assert 'year' in response.get_data(as_text=True)

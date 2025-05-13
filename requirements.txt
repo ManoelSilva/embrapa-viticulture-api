@@ -12,3 +12,4 @@ numpy
 lxml
 pytest
 coverage
+pydantic
