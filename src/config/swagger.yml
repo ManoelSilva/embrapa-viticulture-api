@@ -27,6 +27,7 @@ paths:
           description: "User successfully registered"
         400:
           description: "Invalid data"
+      security: []
 
   /api/auth/login:
     post:
@@ -50,6 +51,7 @@ paths:
           description: "Token successfully generated"
         401:
           description: "Invalid credentials"
+      security: []
 
   /api/production:
     get:
