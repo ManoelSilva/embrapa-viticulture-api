@@ -28,12 +28,14 @@ sudo apt-get install -y python3-pip python3-venv git
 if [ -d "$APP_DIR/.git" ]; then
   cd "$APP_DIR"
   git fetch --all
+  git switch feature/motherduck
   git pull
   cd "$APP_DIR"
 else
   rm -rf "$APP_DIR"
   git clone "$REPO_URL" "$APP_DIR"
   cd "$APP_DIR"
+  git switch feature/motherduck
 fi
 
 # Create .env file with MOTHERDUCK_TOKEN
