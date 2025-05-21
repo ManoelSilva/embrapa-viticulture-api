@@ -13,3 +13,4 @@ lxml
 pytest
 coverage
 pydantic
+python-dotenv

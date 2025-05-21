@@ -65,7 +65,7 @@ Deployment is now performed by pulling the latest code from GitHub directly on t
 You can also deploy manually using the provided PowerShell script:
 
 ```powershell
-./deploy_locally.ps1 <EC2_PUBLIC_IP>
+./deploy_locally.ps1 <EC2_PUBLIC_IP> <MOTHERDUCK_TOKEN>
 ```
 - This script will SSH into the EC2 instance, pull the latest code from GitHub, install dependencies, and restart the service.
 - Make sure your SSH private key is available at `~/.ssh/id_rsa` and your repository is set in the script (default: `manoelsilva/embrapa-viticulture-api`).
