@@ -15,6 +15,7 @@ from src.routes.auth import ApiAuthRoutes
 from src.service.auth import AuthService
 from src.service.duck_db import DuckDBService
 from src.service.extractor import EMBRAPAExtractorService
+from dotenv import load_dotenv
 
 
 class App:
@@ -22,6 +23,7 @@ class App:
     API_URL = '/static/swagger.yml'
 
     def __init__(self):
+        load_dotenv()
         self.app = Flask(__name__)
         self._duckdb = DuckDBService()
         self._extractor = EMBRAPAExtractorService(self._duckdb)

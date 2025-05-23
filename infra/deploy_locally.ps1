@@ -1,9 +1,16 @@
 # Check if IP address is provided
 if ($args.Count -eq 0) {
-    Write-Host "Usage: .\deploy_locally.ps1 <EC2_PUBLIC_IP>"
+    Write-Host "Usage: .\deploy_locally.ps1 <EC2_PUBLIC_IP> <MOTHERDUCK_TOKEN"
     exit 1
 }
 
+if ($args.Count -eq 1) {
+    Write-Host "Usage: .\deploy_locally.ps1 <EC2_PUBLIC_IP> <MOTHERDUCK_TOKEN>"
+    exit 1
+}
+
+
+$MOTHERDUCK_TOKEN=$args[1]
 $EC2_IP = $args[0]
 $SSH_KEY_PATH = Join-Path (Join-Path $env:USERPROFILE ".ssh") "id_rsa"
 $GITHUB_REPOSITORY = "manoelsilva/embrapa-viticulture-api"
@@ -15,18 +22,26 @@ APP_DIR="$USER_HOME/embrapa-viticulture-api"
 REPO_URL="https://github.com/__REPO__.git"
 
 sudo apt-get update
-sudo apt-get install -y python3-pip python3-venv git dos2unix
+sudo apt-get install -y dos2unix
+sudo apt-get install -y python3-pip python3-venv git
 
 if [ -d "$APP_DIR/.git" ]; then
   cd "$APP_DIR"
   git fetch --all
+  git switch feature/motherduck
   git pull
   cd "$APP_DIR"
 else
   rm -rf "$APP_DIR"
   git clone "$REPO_URL" "$APP_DIR"
   cd "$APP_DIR"
+  git switch feature/motherduck
 fi
+
+# Create .env file with MOTHERDUCK_TOKEN
+cat << EOF > "$APP_DIR/.env"
+MOTHERDUCK_TOKEN=__MOTHERDUCK_TOKEN__
+EOF
 
 python3 -m venv "$APP_DIR/src/venv"
 source "$APP_DIR/src/venv/bin/activate"
@@ -62,7 +77,9 @@ sudo systemctl enable embrapa-viticulture
 sudo systemctl restart embrapa-viticulture
 sudo systemctl status embrapa-viticulture
 '@
+
 $REMOTE_COMMAND = $REMOTE_COMMAND -replace '__REPO__', $GITHUB_REPOSITORY
+$REMOTE_COMMAND = $REMOTE_COMMAND -replace '__MOTHERDUCK_TOKEN__', $MOTHERDUCK_TOKEN
 
 Write-Host "REMOTE_COMMAND content:"
 Write-Host $REMOTE_COMMAND

@@ -5,7 +5,7 @@ Werkzeug
 BeautifulSoup4
 waitress
 loguru
-duckdb
+duckdb==1.2.2
 requests
 pandas
 numpy
@@ -13,3 +13,4 @@ lxml
 pytest
 coverage
 pydantic
+python-dotenv

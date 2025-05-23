@@ -60,6 +60,7 @@ Este projeto é uma aplicação Flask que fornece serviços de extração de dad
 
 Crie um arquivo `.env` na raiz do projeto e defina as seguintes variáveis de ambiente:
 ```env
+MOTHERDUCK_TOKEN=seu_token_motherduck
 SECRET_KEY=sua_chave_secreta
 JWT_SECRET_KEY=sua_jwt_secreta
 ```
@@ -121,16 +122,19 @@ As dependências do projeto estão listadas no arquivo `requirements.txt`:
 - Flask
 - Flask-JWT-Extended
 - Flask-Swagger-UI
-- requests
+- Werkzeug
 - BeautifulSoup4
-- lxml
-- pandas
-- numpy
-- pytest
-- coverage
+- waitress
 - loguru
 - duckdb
-- waitress
+- requests
+- pandas
+- numpy
+- lxml
+- pytest
+- coverage
+- pydantic
+- python-dotenv
 
 ## Licença
 

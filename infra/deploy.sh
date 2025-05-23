@@ -6,6 +6,7 @@ USER_HOME="/home/ubuntu"
 APP_DIR="$USER_HOME/embrapa-viticulture-api"
 REPO_URL="https://github.com/${GITHUB_REPOSITORY}.git"
 COMMIT_SHA="${GITHUB_SHA}"
+MOTHERDUCK_TOKEN="${MOTHERDUCK_TOKEN}"
 
 # Update system packages and install required tools
 echo "Updating system packages and installing dependencies..."
@@ -24,6 +25,12 @@ else
   cd "$APP_DIR"
   git checkout "$COMMIT_SHA"
 fi
+
+# Create .env file with MOTHERDUCK_TOKEN
+echo "Creating .env file..."
+cat << EOF > "$APP_DIR/.env"
+MOTHERDUCK_TOKEN=${MOTHERDUCK_TOKEN}
+EOF
 
 # Set up Python virtual environment
 python3 -m venv "$APP_DIR/src/venv"

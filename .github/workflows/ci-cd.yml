@@ -122,7 +122,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             chmod +x /home/ubuntu/deploy.sh
-            GITHUB_REPOSITORY=${{ github.repository }} GITHUB_SHA=${{ github.sha }} /home/ubuntu/deploy.sh
+            GITHUB_REPOSITORY=${{ github.repository }} GITHUB_SHA=${{ github.sha }} MOTHERDUCK_TOKEN=${{ secrets.MOTHERDUCK_TOKEN }} /home/ubuntu/deploy.sh
 
       - name: Check app service status
         uses: appleboy/ssh-action@v1.0.3

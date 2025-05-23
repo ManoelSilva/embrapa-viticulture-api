@@ -1,3 +1,5 @@
+[Versão em Português](README.pt-br.md)
+
 # Infrastructure as Code (IaC) for Embrapa Viticulture API
 
 This directory contains the Terraform configuration and deployment scripts for the Embrapa Viticulture API on AWS.
@@ -41,10 +43,11 @@ This directory contains the Terraform configuration and deployment scripts for t
    - `SSH_PRIVATE_KEY`: Your SSH private key for EC2 instance access
    - `EC2_INSTANCE_ID`: The EC2 instance ID
    - `EC2_SECURITY_GROUP_ID`: The security group ID for the EC2 instance
+   - `MOTHERDUCK_TOKEN`: Token to access motherduck
 
 2. The GitHub Actions workflow will automatically:
    - Run Python tests using pytest
-   - Deploy changes when merged to the main branch
+   - Deploy changes when merged to the feature/cloud_deploy branch
    - Dynamically allow SSH from the runner's IP during deployment and remove it after
    - SSH into the EC2 instance and run `deploy.sh`, which pulls the latest code and restarts the service
 
@@ -65,7 +68,7 @@ Deployment is now performed by pulling the latest code from GitHub directly on t
 You can also deploy manually using the provided PowerShell script:
 
 ```powershell
-./deploy_locally.ps1 <EC2_PUBLIC_IP>
+./deploy_locally.ps1 <EC2_PUBLIC_IP> <MOTHERDUCK_TOKEN>
 ```
 - This script will SSH into the EC2 instance, pull the latest code from GitHub, install dependencies, and restart the service.
 - Make sure your SSH private key is available at `~/.ssh/id_rsa` and your repository is set in the script (default: `manoelsilva/embrapa-viticulture-api`).

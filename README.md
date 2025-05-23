@@ -60,6 +60,7 @@ This project is a Flask application that provides data extraction services and u
 
 Create a `.env` file in the project root and define the following environment variables:
 ```env
+MOTHERDUCK_TOKEN=your_motherduck_token
 SECRET_KEY=your_secret_key
 JWT_SECRET_KEY=your_jwt_secret_key
 ```
@@ -121,16 +122,19 @@ The project dependencies are listed in the `requirements.txt` file:
 - Flask
 - Flask-JWT-Extended
 - Flask-Swagger-UI
-- requests
+- Werkzeug
 - BeautifulSoup4
-- lxml
-- pandas
-- numpy
-- pytest
-- coverage
+- waitress
 - loguru
 - duckdb
-- waitress
+- requests
+- pandas
+- numpy
+- lxml
+- pytest
+- coverage
+- pydantic
+- python-dotenv
 
 ## License
 
