@@ -25,6 +25,8 @@ Este projeto é uma aplicação Flask que fornece serviços de extração de dad
 │   │   ├── scrapper.py        # Serviço de web scraping
 │   │   ├── duck_db.py         # Operações de banco de dados
 │   │   └── extractor.py       # Serviço de extração de dados
+│   ├── model/                  # Modelos Pydantic
+│   │   └── year_request.py     # Modelo Pydantic do parâmetro year
 │   ├── logger_serialize.py     # Configuração de logging
 └── test/                   # Testes unitários
 ├── requirements.txt        # Dependências do projeto
